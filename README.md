@@ -85,3 +85,7 @@ Keep all the `.py` files in the same folder. The last settings are remembered in
 ## Author
 
 Danny Fainozzi, University of Bern ([website](https://d3nfaina.github.io)).
+
+## License
+
+MIT, see [LICENSE](LICENSE). Free to use, modify and share; please keep the copyright notice.
