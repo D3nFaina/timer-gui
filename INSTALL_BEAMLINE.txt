@@ -1,0 +1,55 @@
+TIMER analysis in Python - what this is and how to run it on the beamline PC
+============================================================================
+
+WHAT IT IS
+A Python replacement for the MATLAB TIMER analysis (AnalisiMaxiTimer200505*.m,
+Timing/Svirgo_comparison.m) plus Den's trace-fitting notebook, in one GUI.
+It reads the same h5 files and writes the same Scan_NNN_raw/_nor/_pos/_bg/_MNF.txt
+files as MATLAB (checked identical on STO Scan_008 and SrO Scan_002).
+
+FILES
+  timer_gui.py         the GUI - this is the file you run
+  timer_analysis.py    scan analysis engine (ROI, ellipse, normalisation, binning, output)
+  timer_io.py          h5 loading (images, I0, spectrometer, background by bunch number)
+  timer_timing.py      Svirgo pump A / pump B timing
+  trace_fit.py         thermal decay, FFT + lorentzians, 1/2/3-frequency global fits
+  README_GUI.md        what every box and button does
+  screenshots/         how the windows look
+  start_timer_gui.bat  double-click launcher for Windows
+  start_timer_gui.sh   launcher for Linux / macOS
+  requirements.txt, environment.yml   the Python packages needed
+Keep all the .py files together in the same folder.
+
+INSTALL (once)
+1. Copy the whole TIMER_python folder anywhere on the beamline PC
+   (for example C:\Users\<you>\TIMER_python).
+2. Anaconda already has everything needed (numpy, scipy, matplotlib, h5py, Tkinter).
+   Optional, for nicer fit tables, in an Anaconda Prompt:   pip install tabulate
+   Without Anaconda (Python 3.9 or newer):   pip install -r requirements.txt
+
+RUN
+ a) Anaconda Navigator -> Spyder -> open timer_gui.py -> Run (F5).
+    If Spyder complains about the event loop: Run > Configuration per file >
+    "Execute in a dedicated console".
+ b) or double-click start_timer_gui.bat (Windows; if Anaconda is not in
+    %USERPROFILE%\anaconda3, edit that path inside the .bat),
+ c) or in an Anaconda Prompt:   cd TIMER_python    then    python timer_gui.py
+
+FIRST SCAN
+- Experiment folder: the sample folder that contains Scan_NNN\rawdata, e.g.
+  <beamline data storage>\<proposal>\SrO
+- Scan number, T0, ROI / ellipse / spectrometer window as in the MATLAB input block.
+- Background (tick "Subtract background", then pick one):
+    OnlyProbe file, nearest bunch  = MATLAB BG_Sig = 0, BGStr = '_OnlyProbe' (probe scatter)
+    NoProbe file, nearest bunch    = MATLAB BG_Sig = 0, BGStr = '_NoProbe'   (FEL / pump scatter)
+    NoProbe + OnlyProbe            = both subtracted
+    mean of the first N images     = MATLAB BG_Sig = N
+  MATLAB always used the FIRST background file with the current file names
+  (bug in GetBGbyBunchNumber.m); the GUI uses the real nearest bunch.
+- Output folder blank = <parent of experiment folder>\results\OutPut\<sample>\
+- Press Run. Tick Loop to keep adding the new files while the scan is running.
+  Stop (save) = finish the current file and save everything so far.
+  Abort (no save) = stop and write nothing.
+- Save settings... keeps one settings file per sample; the last settings are
+  restored automatically at the next start.
+- Timing (Svirgo)... and Trace analysis... open the other two tools.
